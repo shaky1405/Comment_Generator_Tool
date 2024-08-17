@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Generator</title>
+    <link rel="stylesheet" href="./static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Comment Generator</h1>
+        <input type="text" id="seedWord" placeholder="Enter seed word">
+        <input type="number" id="nextWords" placeholder="Number of words to generate" value="5">
+        <button onclick="generateComment()">Generate Comment</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function generateComment() {
+            const seedWord = document.getElementById('seedWord').value;
+            const nextWords = document.getElementById('nextWords').value;
+            
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ seed_word: seedWord, next_words: nextWords })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.error) {
+                    resultDiv.textContent = 'Error: ' + data.error;
+                } else {
+                    resultDiv.textContent = 'Generated Comment: ' + data.generated_comment;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
